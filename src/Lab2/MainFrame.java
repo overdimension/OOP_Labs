@@ -103,6 +103,9 @@ public class MainFrame extends JFrame {
                         case MODE_LINE:
                             currentShape = new LineShape();
                             break;
+                        case MODE_RECTANGLE:
+                            currentShape = new RectangleShape();
+                            break;
                     }
 
                     if (currentShape != null) {
