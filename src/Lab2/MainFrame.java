@@ -1,7 +1,8 @@
 package Lab2;
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class MainFrame extends JFrame {
     public static final int MODE_POINT = 1;
@@ -24,6 +25,8 @@ public class MainFrame extends JFrame {
     private JMenuItem itemRectangle;
     private JMenuItem itemEllipse;
 
+    private CanvasPanel canvasPanel;
+
     public MainFrame() {
         setTitle("Лабораторна робота №2 - Варіант 10");
         setSize(800, 600);
@@ -31,6 +34,9 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
 
         initMenu();
+
+        canvasPanel = new CanvasPanel();
+        add(canvasPanel, BorderLayout.CENTER);
     }
 
     public boolean addShape(Shape shape) {
@@ -73,8 +79,79 @@ public class MainFrame extends JFrame {
         setJMenuBar(menuBar);
     }
 
-    public int getCurrentMode() {
-        return currentMode;
+    private class CanvasPanel extends JPanel {
+        private Shape currentShape = null;
+        private int startX, startY;
+        private int currentX, currentY;
+        private boolean isDragging = false;
+
+        public CanvasPanel() {
+            setBackground(Color.WHITE);
+
+            MouseAdapter mouseHandler = new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    startX = e.getX();
+                    startY = e.getY();
+                    currentX = startX;
+                    currentY = startY;
+
+                    switch (currentMode) {
+                        case MODE_POINT:
+                            currentShape = new PointShape();
+                            break;
+                        case MODE_LINE:
+                            currentShape = new LineShape();
+                            break;
+                    }
+
+                    if (currentShape != null) {
+                        currentShape.setPoints(startX, startY, startX, startY);
+                        isDragging = true;
+                    }
+                }
+
+                @Override
+                public void mouseDragged(MouseEvent e) {
+                    if (isDragging && currentShape != null) {
+                        currentX = e.getX();
+                        currentY = e.getY();
+                        repaint(); //Автоматично викликає paintComponent для гумового сліду
+                    }
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    if (isDragging && currentShape != null) {
+                        currentShape.setPoints(startX, startY, e.getX(), e.getY());
+                        addShape(currentShape);
+                        currentShape = null;
+                        isDragging = false;
+                        repaint(); //Малює фігуру остаточно
+                    }
+                }
+            };
+
+            addMouseListener(mouseHandler);
+            addMouseMotionListener(mouseHandler);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+
+            //Відмальовка всіх фігур з масиву
+            for (int i = 0; i < shapeCount; i++) {
+                if (pcshape[i] != null) {
+                    pcshape[i].show(g);
+                }
+            }
+
+            //Відмальовка гумового сліду під час перетягування
+            if (isDragging && currentShape != null) {
+                currentShape.trail(g, currentX, currentY);
+            }
+        }
     }
 
     public static void main(String[] args) {
