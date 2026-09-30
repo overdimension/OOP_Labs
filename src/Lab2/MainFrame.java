@@ -106,6 +106,9 @@ public class MainFrame extends JFrame {
                         case MODE_RECTANGLE:
                             currentShape = new RectangleShape();
                             break;
+                        case MODE_ELLIPSE:
+                            currentShape = new EllipseShape();
+                            break;
                     }
 
                     if (currentShape != null) {
