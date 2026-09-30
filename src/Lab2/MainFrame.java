@@ -11,6 +11,10 @@ public class MainFrame extends JFrame {
 
     private int currentMode = MODE_POINT;
 
+    private static final int MAX_SHAPES = 110; //N = 10 + 100
+    private Shape[] pcshape = new Shape[MAX_SHAPES]; //Статичний масив
+    private int shapeCount = 0;
+
     private JMenuBar menuBar;
     private JMenu menuFile;
     private JMenu menuObjects;
@@ -27,6 +31,16 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
 
         initMenu();
+    }
+
+    public boolean addShape(Shape shape) {
+        if (shapeCount < MAX_SHAPES) {
+            pcshape[shapeCount++] = shape;
+            return true;
+        } else {
+            JOptionPane.showMessageDialog(this, "Переповнення статичного масиву (максимум 110 об'єктів)!", "Помилка", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
     }
 
     private void initMenu() {
