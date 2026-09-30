@@ -1,5 +1,7 @@
 package Lab2;
 import javax.swing.*;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -20,10 +22,11 @@ public class MainFrame extends JFrame {
     private JMenu menuFile;
     private JMenu menuObjects;
     private JMenuItem itemExit;
-    private JMenuItem itemPoint;
-    private JMenuItem itemLine;
-    private JMenuItem itemRectangle;
-    private JMenuItem itemEllipse;
+
+    private JCheckBoxMenuItem itemPoint;
+    private JCheckBoxMenuItem itemLine;
+    private JCheckBoxMenuItem itemRectangle;
+    private JCheckBoxMenuItem itemEllipse;
 
     private CanvasPanel canvasPanel;
 
@@ -58,10 +61,11 @@ public class MainFrame extends JFrame {
         menuFile.add(itemExit);
 
         menuObjects = new JMenu("Об'єкти");
-        itemPoint = new JMenuItem("Крапка");
-        itemLine = new JMenuItem("Лінія");
-        itemRectangle = new JMenuItem("Прямокутник");
-        itemEllipse = new JMenuItem("Еліпс");
+
+        itemPoint = new JCheckBoxMenuItem("Крапка");
+        itemLine = new JCheckBoxMenuItem("Лінія");
+        itemRectangle = new JCheckBoxMenuItem("Прямокутник");
+        itemEllipse = new JCheckBoxMenuItem("Еліпс");
 
         itemPoint.addActionListener(e -> currentMode = MODE_POINT);
         itemLine.addActionListener(e -> currentMode = MODE_LINE);
@@ -72,6 +76,23 @@ public class MainFrame extends JFrame {
         menuObjects.add(itemLine);
         menuObjects.add(itemRectangle);
         menuObjects.add(itemEllipse);
+
+        //Динамічно виставляємо галочку при відкритті меню
+        menuObjects.addMenuListener(new MenuListener() {
+            @Override
+            public void menuSelected(MenuEvent e) {
+                itemPoint.setSelected(currentMode == MODE_POINT);
+                itemLine.setSelected(currentMode == MODE_LINE);
+                itemRectangle.setSelected(currentMode == MODE_RECTANGLE);
+                itemEllipse.setSelected(currentMode == MODE_ELLIPSE);
+            }
+
+            @Override
+            public void menuDeselected(MenuEvent e) {}
+
+            @Override
+            public void menuCanceled(MenuEvent e) {}
+        });
 
         menuBar.add(menuFile);
         menuBar.add(menuObjects);
