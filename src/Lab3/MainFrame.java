@@ -34,6 +34,8 @@ public class MainFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
+        setLayout(new BorderLayout());
+
         initMenu();
         initToolBar();
 
@@ -125,16 +127,27 @@ public class MainFrame extends JFrame {
         setJMenuBar(menuBar);
     }
 
+    //Допоміжний метод для автоматичного масштабування PNG під розмір кнопки
+    private ImageIcon loadScaledIcon(String path, int width, int height) {
+        java.net.URL imgURL = getClass().getResource(path);
+        if (imgURL != null) {
+            ImageIcon originalIcon = new ImageIcon(imgURL);
+            Image scaledImg = originalIcon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+            return new ImageIcon(scaledImg);
+        }
+        return null;
+    }
+
     private void initToolBar() {
         toolBar = new JToolBar();
         toolBar.setFloatable(false);
 
         toolGroup = new ButtonGroup();
 
-        btnPoint = new JToggleButton("Крапка");
-        btnLine = new JToggleButton("Лінія");
-        btnRectangle = new JToggleButton("Прямокутник");
-        btnEllipse = new JToggleButton("Еліпс");
+        btnPoint = new JToggleButton(loadScaledIcon("/Lab3/icons/point.png", 20, 20));
+        btnLine = new JToggleButton(loadScaledIcon("/Lab3/icons/line.png", 20, 20));
+        btnRectangle = new JToggleButton(loadScaledIcon("/Lab3/icons/rect.png", 20, 20));
+        btnEllipse = new JToggleButton(loadScaledIcon("/Lab3/icons/ellipse.png", 20, 20));
 
         //Додавання Tooltips (підказок)
         btnPoint.setToolTipText("Малювання крапки");
