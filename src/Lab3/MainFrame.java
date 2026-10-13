@@ -1,6 +1,8 @@
 package Lab3;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class MainFrame extends JFrame {
     public static final int MODE_POINT = 1;
@@ -25,6 +27,8 @@ public class MainFrame extends JFrame {
     private JToggleButton btnPoint, btnLine, btnRectangle, btnEllipse;
     private ButtonGroup toolGroup;
 
+    private CanvasPanel canvasPanel;
+
     public MainFrame() {
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -32,7 +36,23 @@ public class MainFrame extends JFrame {
 
         initMenu();
         initToolBar();
-        updateTitle();
+
+        canvasPanel = new CanvasPanel();
+        add(canvasPanel, BorderLayout.CENTER);
+
+        setMode(MODE_POINT);
+    }
+
+    public boolean addShape(Shape shape) {
+        if (shapeCount < MAX_SHAPES) {
+            pcshape[shapeCount++] = shape;
+            return true;
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Переповнення статичного масиву (максимум 111 об'єктів)!",
+                    "Помилка", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
     }
 
     private void updateTitle() {
@@ -137,9 +157,86 @@ public class MainFrame extends JFrame {
         toolBar.add(btnRectangle);
         toolBar.add(btnEllipse);
 
-        setMode(MODE_POINT); //Встановлюємо початковий стан
-
         add(toolBar, BorderLayout.NORTH);
+    }
+
+    private class CanvasPanel extends JPanel {
+        private Shape currentShape = null;
+        private int startX, startY;
+        private int currentX, currentY;
+        private boolean isDragging = false;
+
+        public CanvasPanel() {
+            setBackground(Color.WHITE);
+
+            MouseAdapter mouseHandler = new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    startX = e.getX();
+                    startY = e.getY();
+                    currentX = startX;
+                    currentY = startY;
+
+                    switch (currentMode) {
+                        case MODE_POINT:
+                            currentShape = new PointShape();
+                            break;
+                        case MODE_LINE:
+                            currentShape = new LineShape();
+                            break;
+                        case MODE_RECTANGLE:
+                            currentShape = new RectangleShape();
+                            break;
+                        case MODE_ELLIPSE:
+                            currentShape = new EllipseShape();
+                            break;
+                    }
+
+                    if (currentShape != null) {
+                        currentShape.setPoints(startX, startY, startX, startY);
+                        isDragging = true;
+                    }
+                }
+
+                @Override
+                public void mouseDragged(MouseEvent e) {
+                    if (isDragging && currentShape != null) {
+                        currentX = e.getX();
+                        currentY = e.getY();
+                        repaint();
+                    }
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    if (isDragging && currentShape != null) {
+                        currentShape.setPoints(startX, startY, e.getX(), e.getY());
+                        addShape(currentShape);
+                        currentShape = null;
+                        isDragging = false;
+                        repaint();
+                    }
+                }
+            };
+
+            addMouseListener(mouseHandler);
+            addMouseMotionListener(mouseHandler);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+
+            for (int i = 0; i < shapeCount; i++) {
+                if (pcshape[i] != null) {
+                    pcshape[i].show(g);
+                }
+            }
+
+            if (isDragging && currentShape != null) {
+                currentShape.trail(g, currentX, currentY);
+            }
+        }
     }
 
     public static void main(String[] args) {
