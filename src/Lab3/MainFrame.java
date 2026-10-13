@@ -14,11 +14,15 @@ public class MainFrame extends JFrame {
     private Shape[] pcshape = new Shape[MAX_SHAPES];
     private int shapeCount = 0;
 
+    //Menu
+    private JMenuBar menuBar;
+    private JMenu menuFile, menuObjects, menuHelp;
+    private JRadioButtonMenuItem itemPoint, itemLine, itemRectangle, itemEllipse;
+    private ButtonGroup menuGroup;
+
+    //Toolbar
     private JToolBar toolBar;
-    private JToggleButton btnPoint;
-    private JToggleButton btnLine;
-    private JToggleButton btnRectangle;
-    private JToggleButton btnEllipse;
+    private JToggleButton btnPoint, btnLine, btnRectangle, btnEllipse;
     private ButtonGroup toolGroup;
 
     public MainFrame() {
@@ -26,25 +30,79 @@ public class MainFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
+        initMenu();
         initToolBar();
         updateTitle();
     }
 
     private void updateTitle() {
-        String modeName = "";
-        switch (currentMode) {
-            case MODE_POINT: modeName = "Крапка"; break;
-            case MODE_LINE: modeName = "Лінія"; break;
-            case MODE_RECTANGLE: modeName = "Прямокутник"; break;
-            case MODE_ELLIPSE: modeName = "Еліпс"; break;
-        }
+        String modeName = switch (currentMode) {
+            case MODE_POINT -> "Крапка";
+            case MODE_LINE -> "Лінія";
+            case MODE_RECTANGLE -> "Прямокутник";
+            case MODE_ELLIPSE -> "Еліпс";
+            default -> "";
+        };
         //Позначка поточного типу об'єкта в заголовку вікна
         setTitle("Лабораторна робота №3 - [Обрано об'єкт: " + modeName + "]");
     }
 
+    //Синхронізована зміна режиму
     private void setMode(int mode) {
         this.currentMode = mode;
         updateTitle();
+
+        //Синхронізація кнопок Toolbar
+        switch (mode) {
+            case MODE_POINT -> { btnPoint.setSelected(true); itemPoint.setSelected(true); }
+            case MODE_LINE -> { btnLine.setSelected(true); itemLine.setSelected(true); }
+            case MODE_RECTANGLE -> { btnRectangle.setSelected(true); itemRectangle.setSelected(true); }
+            case MODE_ELLIPSE -> { btnEllipse.setSelected(true); itemEllipse.setSelected(true); }
+        }
+    }
+
+    private void initMenu() {
+        menuBar = new JMenuBar();
+
+        menuFile = new JMenu("Файл");
+        JMenuItem itemExit = new JMenuItem("Вихід");
+        itemExit.addActionListener(e -> System.exit(0));
+        menuFile.add(itemExit);
+
+        menuObjects = new JMenu("Об'єкти");
+        menuGroup = new ButtonGroup();
+
+        itemPoint = new JRadioButtonMenuItem("Крапка");
+        itemLine = new JRadioButtonMenuItem("Лінія");
+        itemRectangle = new JRadioButtonMenuItem("Прямокутник");
+        itemEllipse = new JRadioButtonMenuItem("Еліпс");
+
+        itemPoint.addActionListener(e -> setMode(MODE_POINT));
+        itemLine.addActionListener(e -> setMode(MODE_LINE));
+        itemRectangle.addActionListener(e -> setMode(MODE_RECTANGLE));
+        itemEllipse.addActionListener(e -> setMode(MODE_ELLIPSE));
+
+        menuGroup.add(itemPoint);
+        menuGroup.add(itemLine);
+        menuGroup.add(itemRectangle);
+        menuGroup.add(itemEllipse);
+
+        menuObjects.add(itemPoint);
+        menuObjects.add(itemLine);
+        menuObjects.add(itemRectangle);
+        menuObjects.add(itemEllipse);
+
+        menuHelp = new JMenu("Довідка");
+        JMenuItem itemAbout = new JMenuItem("Про програму");
+        itemAbout.addActionListener(e -> JOptionPane.showMessageDialog(this, "Графічний редактор. Лабораторна робота №3"));
+        menuHelp.add(itemAbout);
+
+        //Порядок пунктів меню за умовою: Файл | Об'єкти | Довідка
+        menuBar.add(menuFile);
+        menuBar.add(menuObjects);
+        menuBar.add(menuHelp);
+
+        setJMenuBar(menuBar);
     }
 
     private void initToolBar() {
@@ -79,7 +137,7 @@ public class MainFrame extends JFrame {
         toolBar.add(btnRectangle);
         toolBar.add(btnEllipse);
 
-        btnPoint.setSelected(true); //За замовчуванням
+        setMode(MODE_POINT); //Встановлюємо початковий стан
 
         add(toolBar, BorderLayout.NORTH);
     }
