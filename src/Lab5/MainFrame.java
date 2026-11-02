@@ -26,19 +26,19 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // Получение экземпляра Singleton (Вариант 10)
+        //Отримання екземпляра Singleton
         editor = MyEditor.getInstance();
 
-        // Создание окна таблицы
+        //Створення вікна таблиці
         tableWindow = new MyTable(this);
 
-        // Callback при изменении данных в MyEditor
+        //Callback при зміні даних MyEditor
         editor.setOnDataChangedCallback(() -> {
             tableWindow.updateTable(editor.getShapes());
             if (canvasPanel != null) canvasPanel.repaint();
         });
 
-        // Реализация Listener для Бонусов 1 и 2
+        //Реалізація Listener для бонусів 1 та 2
         tableWindow.setTableListener(new TableListener() {
             @Override
             public void onRowSelected(int rowIndex) {
@@ -60,7 +60,7 @@ public class MainFrame extends JFrame {
 
         setMode(MODE_POINT);
 
-        // Автоматическое закрытие таблицы при закрытии программы
+        //Автоматичне закриття таблиці під час закриття програми
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
