@@ -1,6 +1,9 @@
 package Lab5.shapes;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 public abstract class Shape {
     protected int x1, y1, x2, y2;
@@ -24,6 +27,16 @@ public abstract class Shape {
 
     public boolean isSelected() {
         return selected;
+    }
+
+    protected void applyOutlineStyle(Graphics2D g2d, Color originalColor) {
+        if (selected) {
+            g2d.setColor(Color.RED);
+            g2d.setStroke(new BasicStroke(3));
+        } else {
+            g2d.setColor(originalColor);
+            g2d.setStroke(new BasicStroke(1));
+        }
     }
 
     public abstract String getName();

@@ -14,18 +14,18 @@ public class EllipseShape extends Shape {
 
     @Override
     public void show(Graphics g) {
-        //Ввід по двох протилежних кутах
-        int x = Math.min(x1, x2);
-        int y = Math.min(y1, y2);
+        Graphics2D g2d = (Graphics2D) g;
+
+        int minX = Math.min(x1, x2);
+        int minY = Math.min(y1, y2);
         int width = Math.abs(x2 - x1);
         int height = Math.abs(y2 - y1);
 
-        //Біле заповнення + чорний контур
-        g.setColor(Color.WHITE);
-        g.fillOval(x, y, width, height);
+        g2d.setColor(Color.WHITE);
+        g2d.fillOval(minX, minY, width, height);
 
-        g.setColor(Color.BLACK);
-        g.drawOval(x, y, width, height);
+        applyOutlineStyle(g2d, Color.BLACK);
+        g2d.drawOval(minX, minY, width, height);
     }
 
     @Override

@@ -22,6 +22,14 @@ public class LineCirclesShape extends Shape {
     }
 
     @Override
+    public void setSelected(boolean selected) {
+        super.setSelected(selected);
+        line.setSelected(selected);
+        circle1.setSelected(selected);
+        circle2.setSelected(selected);
+    }
+
+    @Override
     public void show(Graphics g) {
         line.show(g);
         circle1.show(g);

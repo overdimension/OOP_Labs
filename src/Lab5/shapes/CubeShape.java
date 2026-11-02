@@ -62,6 +62,14 @@ public class CubeShape extends Shape {
     }
 
     @Override
+    public void setSelected(boolean selected) {
+        super.setSelected(selected);
+        for (LineShape line : lines) {
+            line.setSelected(selected);
+        }
+    }
+
+    @Override
     public void show(Graphics g) {
         //Виклики LineShape.show() для відображення ліній каркаса
         for (LineShape line : lines) {

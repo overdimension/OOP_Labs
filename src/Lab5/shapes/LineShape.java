@@ -13,8 +13,9 @@ public class LineShape extends Shape {
 
     @Override
     public void show(Graphics g) {
-        g.setColor(Color.BLACK);
-        g.drawLine(x1, y1, x2, y2);
+        Graphics2D g2d = (Graphics2D) g;
+        applyOutlineStyle(g2d, Color.BLACK);
+        g2d.drawLine(x1, y1, x2, y2);
     }
 
     @Override

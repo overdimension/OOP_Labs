@@ -14,21 +14,18 @@ public class RectangleShape extends Shape {
 
     @Override
     public void show(Graphics g) {
-        //Ввід від центру до кута
-        int rx = Math.abs(x2 - x1);
-        int ry = Math.abs(y2 - y1);
-        int x = x1 - rx;
-        int y = y1 - ry;
-        int width = rx * 2;
-        int height = ry * 2;
+        Graphics2D g2d = (Graphics2D) g;
 
-        //Сіре заповнення
-        g.setColor(Color.GRAY);
-        g.fillRect(x, y, width, height);
+        int minX = Math.min(x1, x2);
+        int minY = Math.min(y1, y2);
+        int width = Math.abs(x2 - x1);
+        int height = Math.abs(y2 - y1);
 
-        //Чорний контур
-        g.setColor(Color.BLACK);
-        g.drawRect(x, y, width, height);
+        g2d.setColor(Color.GRAY);
+        g2d.fillRect(minX, minY, width, height);
+
+        applyOutlineStyle(g2d, Color.BLACK);
+        g2d.drawRect(minX, minY, width, height);
     }
 
     @Override
