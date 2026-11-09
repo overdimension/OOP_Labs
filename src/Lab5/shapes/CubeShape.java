@@ -3,13 +3,12 @@ package Lab5.shapes;
 import java.awt.Graphics;
 
 public class CubeShape extends Shape {
-    private final LineShape[] lines = new LineShape[12]; //12 ребер куба
-
-    public CubeShape() {
-        for (int i = 0; i < 12; i++) {
-            lines[i] = new LineShape();
-        }
-    }
+    private final RectangleShape rectFront = new RectangleShape();
+    private final RectangleShape rectBack = new RectangleShape();
+    private final LineShape line1 = new LineShape();
+    private final LineShape line2 = new LineShape();
+    private final LineShape line3 = new LineShape();
+    private final LineShape line4 = new LineShape();
 
     @Override
     public void setPoints(int x1, int y1, int x2, int y2) {
@@ -25,35 +24,21 @@ public class CubeShape extends Shape {
         int dx = (maxX - minX) / 3;
         int dy = (maxY - minY) / 3;
 
-        //4 вершини передньої грані
+        //Передній прямокутник
         int fx1 = minX,       fy1 = minY + dy;
-        int fx2 = maxX - dx, fy1_2 = minY + dy;
-        int fx2_2 = maxX - dx, fy2 = maxY;
-        int fx1_2 = minX,       fy2_2 = maxY;
+        int fx2 = maxX - dx, fy2 = maxY;
+        rectFront.setPoints(fx1, fy1, fx2, fy2);
 
-        //4 вершини задньої грані
+        //Задній прямокутник
         int bx1 = minX + dx,  by1 = minY;
-        int bx2 = maxX,       by1_2 = minY;
-        int bx2_2 = maxX,       by2 = maxY - dy;
-        int bx1_2 = minX + dx,  by2_2 = maxY - dy;
+        int bx2 = maxX,       by2 = maxY - dy;
+        rectBack.setPoints(bx1, by1, bx2, by2);
 
-        //Передній квадрат
-        lines[0].setPoints(fx1, fy1, fx2, fy1_2);
-        lines[1].setPoints(fx2, fy1_2, fx2_2, fy2);
-        lines[2].setPoints(fx2_2, fy2, fx1_2, fy2_2);
-        lines[3].setPoints(fx1_2, fy2_2, fx1, fy1);
-
-        //Задній квадрат
-        lines[4].setPoints(bx1, by1, bx2, by1_2);
-        lines[5].setPoints(bx2, by1_2, bx2_2, by2);
-        lines[6].setPoints(bx2_2, by2, bx1_2, by2_2);
-        lines[7].setPoints(bx1_2, by2_2, bx1, by1);
-
-        //З'єднувальні ребра
-        lines[8].setPoints(fx1, fy1, bx1, by1);
-        lines[9].setPoints(fx2, fy1_2, bx2, by1_2);
-        lines[10].setPoints(fx2_2, fy2, bx2_2, by2);
-        lines[11].setPoints(fx1_2, fy2_2, bx1_2, by2_2);
+        //Чотири сполучні лінії між вершинами двох прямокутників
+        line1.setPoints(fx1, fy1, bx1, by1);
+        line2.setPoints(fx2, fy1, bx2, by1);
+        line3.setPoints(fx2, fy2, bx2, by2);
+        line4.setPoints(fx1, fy2, bx1, by2);
     }
 
     @Override
@@ -64,17 +49,22 @@ public class CubeShape extends Shape {
     @Override
     public void setSelected(boolean selected) {
         super.setSelected(selected);
-        for (LineShape line : lines) {
-            line.setSelected(selected);
-        }
+        rectFront.setSelected(selected);
+        rectBack.setSelected(selected);
+        line1.setSelected(selected);
+        line2.setSelected(selected);
+        line3.setSelected(selected);
+        line4.setSelected(selected);
     }
 
     @Override
     public void show(Graphics g) {
-        //Виклики LineShape.show() для відображення ліній каркаса
-        for (LineShape line : lines) {
-            line.show(g);
-        }
+        rectBack.show(g);
+        rectFront.show(g);
+        line1.show(g);
+        line2.show(g);
+        line3.show(g);
+        line4.show(g);
     }
 
     @Override
