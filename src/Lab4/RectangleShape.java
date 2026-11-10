@@ -5,8 +5,20 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 public class RectangleShape extends Shape {
+    private boolean isFilled = true;
+
+    public void setFilled(boolean filled) {
+        this.isFilled = filled;
+    }
+
+    public boolean isFilled() {
+        return isFilled;
+    }
+
     @Override
     public void show(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+
         //Ввід від центру до кута
         int rx = Math.abs(x2 - x1);
         int ry = Math.abs(y2 - y1);
@@ -15,13 +27,16 @@ public class RectangleShape extends Shape {
         int width = rx * 2;
         int height = ry * 2;
 
-        //Сіре заповнення
-        g.setColor(Color.GRAY);
-        g.fillRect(x, y, width, height);
+        if (width > 0 && height > 0) {
+            if (isFilled) {
+                g2d.setColor(Color.GRAY);
+                g2d.fillRect(x, y, width, height);
+            }
 
-        //Чорний контур
-        g.setColor(Color.BLACK);
-        g.drawRect(x, y, width, height);
+            g2d.setColor(Color.BLACK);
+            g2d.setStroke(new BasicStroke(1));
+            g2d.drawRect(x, y, width, height);
+        }
     }
 
     @Override

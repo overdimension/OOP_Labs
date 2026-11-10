@@ -10,6 +10,11 @@ public class CubeShape extends Shape {
     private final LineShape line3 = new LineShape();
     private final LineShape line4 = new LineShape();
 
+    public CubeShape() {
+        rectFront.setFilled(false);
+        rectBack.setFilled(false);
+    }
+
     @Override
     public void setPoints(int x1, int y1, int x2, int y2) {
         super.setPoints(x1, y1, x2, y2);
